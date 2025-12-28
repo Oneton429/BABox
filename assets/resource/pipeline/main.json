@@ -1,0 +1,294 @@
+{
+  "$__mpe_config_main": {
+    "$__mpe_code": {
+      "filePath": "E:\\BABox\\assets\\resource\\pipeline\\main.json",
+      "filename": "main",
+      "isModifiedExternally": true,
+      "lastSyncTime": 1766905547646,
+      "prefix": "",
+      "savedViewport": {
+        "x": -1184,
+        "y": -85,
+        "zoom": 0.7
+      },
+      "version": "v0.13.0"
+    }
+  },
+  "入口": {
+    "$__mpe_code": {
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "action": {
+      "param": {
+        "target": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "退出待机"
+    ],
+    "post_wait_freezes": 500,
+    "recognition": {
+      "param": {},
+      "type": "DirectHit"
+    }
+  },
+  "判断进入成功": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1257,
+        "y": 157
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "DoNothing"
+    },
+    "next": [
+      "进入学生详情（未固定）",
+      "进入学生详情（固定）"
+    ],
+    "on_error": [
+      "进入学生列表"
+    ],
+    "recognition": {
+      "param": {
+        "expected": [
+          "學生清單",
+          "学生清单"
+        ],
+        "roi": [
+          21,
+          77,
+          194,
+          79
+        ]
+      },
+      "type": "OCR"
+    },
+    "timeout": 5000
+  },
+  "新建节点3": {
+    "$__mpe_code": {
+      "position": {
+        "x": 2624,
+        "y": 527
+      }
+    },
+    "action": {
+      "param": {
+        "custom_action": "my_action_111"
+      },
+      "type": "Custom"
+    },
+    "recognition": {
+      "param": {},
+      "type": "DirectHit"
+    }
+  },
+  "识别Home图标": {
+    "$__mpe_code": {
+      "position": {
+        "x": 628,
+        "y": 157
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "Click"
+    },
+    "next": [
+      "进入学生列表"
+    ],
+    "post_wait_freezes": 500,
+    "recognition": {
+      "param": {
+        "roi": [
+          1135,
+          0,
+          145,
+          45
+        ],
+        "template": [
+          "HomeButton.png"
+        ]
+      },
+      "type": "TemplateMatch"
+    }
+  },
+  "进入学生列表": {
+    "$__mpe_code": {
+      "position": {
+        "x": 943,
+        "y": 120
+      }
+    },
+    "action": {
+      "param": {
+        "target_offset": [
+          0,
+          30,
+          0,
+          0
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "判断进入成功"
+    ],
+    "on_error": [
+      "识别Home图标"
+    ],
+    "pre_wait_freezes": 500,
+    "recognition": {
+      "param": {
+        "roi": [
+          20,
+          609,
+          1111,
+          110
+        ],
+        "template": [
+          "StudentEntry.png"
+        ]
+      },
+      "type": "TemplateMatch"
+    },
+    "timeout": 5000
+  },
+  "进入学生详情（固定）": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1571,
+        "y": 156
+      }
+    },
+    "action": {
+      "param": {
+        "target_offset": [
+          140,
+          140,
+          0,
+          0
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "验证进入成功"
+    ],
+    "recognition": {
+      "param": {
+        "green_mask": true,
+        "roi": [
+          30,
+          158,
+          1213,
+          555
+        ],
+        "template": [
+          "PinnedIcon.png"
+        ]
+      },
+      "type": "TemplateMatch"
+    }
+  },
+  "进入学生详情（未固定）": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1571,
+        "y": 486
+      }
+    },
+    "action": {
+      "param": {
+        "target_offset": [
+          140,
+          140,
+          0,
+          0
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "验证进入成功"
+    ],
+    "recognition": {
+      "param": {
+        "green_mask": true,
+        "roi": [
+          30,
+          158,
+          1213,
+          555
+        ],
+        "template": [
+          "UnpinnedIcon.png"
+        ]
+      },
+      "type": "TemplateMatch"
+    }
+  },
+  "退出待机": {
+    "$__mpe_code": {
+      "position": {
+        "x": 314,
+        "y": 0
+      }
+    },
+    "action": {
+      "param": {
+        "target": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "识别Home图标",
+      "进入学生列表"
+    ],
+    "post_wait_freezes": 200,
+    "recognition": {
+      "param": {},
+      "type": "DirectHit"
+    }
+  },
+  "验证进入成功": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1885,
+        "y": 548
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "StopTask"
+    },
+    "on_error": [
+      "判断进入成功"
+    ],
+    "recognition": {
+      "param": {
+        "expected": [
+          "基本情报",
+          "基本情報"
+        ]
+      },
+      "type": "OCR"
+    }
+  }
+}
