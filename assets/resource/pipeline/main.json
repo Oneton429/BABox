@@ -4,21 +4,48 @@
       "filePath": "E:\\BABox\\assets\\resource\\pipeline\\main.json",
       "filename": "main",
       "isModifiedExternally": true,
-      "lastSyncTime": 1766905547646,
+      "lastSyncTime": 1766918697954,
       "prefix": "",
       "savedViewport": {
-        "x": -1184,
-        "y": -85,
-        "zoom": 0.7
+        "x": -1261,
+        "y": 155,
+        "zoom": 1
       },
       "version": "v0.13.0"
+    }
+  },
+  "下一位": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1616,
+        "y": 68
+      }
+    },
+    "action": {
+      "param": {
+        "target": [
+          1235,
+          357,
+          47,
+          53
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "检测是否位于详情页"
+    ],
+    "post_delay": 0,
+    "recognition": {
+      "param": {},
+      "type": "DirectHit"
     }
   },
   "入口": {
     "$__mpe_code": {
       "position": {
         "x": 0,
-        "y": 0
+        "y": 176
       }
     },
     "action": {
@@ -44,8 +71,8 @@
   "判断进入成功": {
     "$__mpe_code": {
       "position": {
-        "x": 1257,
-        "y": 157
+        "x": 1200,
+        "y": 292
       }
     },
     "action": {
@@ -74,13 +101,13 @@
       },
       "type": "OCR"
     },
-    "timeout": 5000
+    "timeout": 2500
   },
-  "新建节点3": {
+  "图像识别": {
     "$__mpe_code": {
       "position": {
-        "x": 2624,
-        "y": 527
+        "x": 2100,
+        "y": 224
       }
     },
     "action": {
@@ -88,6 +115,64 @@
         "custom_action": "my_action_111"
       },
       "type": "Custom"
+    },
+    "max_hit": 300,
+    "next": [
+      "下一位"
+    ],
+    "on_error": [
+      "结束"
+    ],
+    "post_delay": 0,
+    "pre_delay": 0,
+    "recognition": {
+      "param": {
+        "custom_recognition": "screenshot"
+      },
+      "type": "Custom"
+    },
+    "timeout": 1000
+  },
+  "检测是否位于详情页": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1908,
+        "y": -100
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "DoNothing"
+    },
+    "next": [
+      "图像识别"
+    ],
+    "on_error": [
+      "结束"
+    ],
+    "post_delay": 0,
+    "pre_delay": 0,
+    "recognition": {
+      "param": {
+        "expected": [
+          "基本情报",
+          "基本情報"
+        ]
+      },
+      "type": "OCR"
+    },
+    "timeout": 1000
+  },
+  "结束": {
+    "$__mpe_code": {
+      "position": {
+        "x": 2440,
+        "y": 239
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "StopTask"
     },
     "recognition": {
       "param": {},
@@ -97,8 +182,8 @@
   "识别Home图标": {
     "$__mpe_code": {
       "position": {
-        "x": 628,
-        "y": 157
+        "x": 600,
+        "y": 160
       }
     },
     "action": {
@@ -108,7 +193,7 @@
     "next": [
       "进入学生列表"
     ],
-    "post_wait_freezes": 500,
+    "post_wait_freezes": 1000,
     "recognition": {
       "param": {
         "roi": [
@@ -127,15 +212,15 @@
   "进入学生列表": {
     "$__mpe_code": {
       "position": {
-        "x": 943,
-        "y": 120
+        "x": 900,
+        "y": 259
       }
     },
     "action": {
       "param": {
         "target_offset": [
           0,
-          30,
+          25,
           0,
           0
         ]
@@ -148,7 +233,7 @@
     "on_error": [
       "识别Home图标"
     ],
-    "pre_wait_freezes": 500,
+    "pre_wait_freezes": 1000,
     "recognition": {
       "param": {
         "roi": [
@@ -168,8 +253,8 @@
   "进入学生详情（固定）": {
     "$__mpe_code": {
       "position": {
-        "x": 1571,
-        "y": 156
+        "x": 1500,
+        "y": 583
       }
     },
     "action": {
@@ -205,8 +290,8 @@
   "进入学生详情（未固定）": {
     "$__mpe_code": {
       "position": {
-        "x": 1571,
-        "y": 486
+        "x": 1500,
+        "y": 283
       }
     },
     "action": {
@@ -242,8 +327,8 @@
   "退出待机": {
     "$__mpe_code": {
       "position": {
-        "x": 314,
-        "y": 0
+        "x": 300,
+        "y": 176
       }
     },
     "action": {
@@ -270,17 +355,22 @@
   "验证进入成功": {
     "$__mpe_code": {
       "position": {
-        "x": 1885,
-        "y": 548
+        "x": 1800,
+        "y": 584
       }
     },
     "action": {
       "param": {},
-      "type": "StopTask"
+      "type": "DoNothing"
     },
+    "next": [
+      "图像识别"
+    ],
     "on_error": [
       "判断进入成功"
     ],
+    "post_delay": 0,
+    "pre_delay": 0,
     "recognition": {
       "param": {
         "expected": [

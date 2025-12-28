@@ -53,8 +53,12 @@
     },
     "task": [
         {
-            "name": "Box导出",
+            "name": "Box导出（导航）",
             "entry": "入口"
+        },
+        {
+            "name": "Box导出",
+            "entry": "验证进入成功"
         }
     ],
     "option": {

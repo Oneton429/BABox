@@ -12,6 +12,4 @@ class MyCustomAction(CustomAction):
         argv: CustomAction.RunArg,
     ) -> bool:
 
-        print("my_action_111 is running!")
-
-        return True
+        return argv.box is not None
