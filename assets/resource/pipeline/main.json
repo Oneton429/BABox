@@ -4,30 +4,30 @@
       "filePath": "E:\\BABox\\assets\\resource\\pipeline\\main.json",
       "filename": "main",
       "isModifiedExternally": true,
-      "lastSyncTime": 1766918697954,
+      "lastSyncTime": 1767280576119,
       "prefix": "",
       "savedViewport": {
-        "x": -1261,
-        "y": 155,
-        "zoom": 1
+        "x": -1594,
+        "y": -47,
+        "zoom": 0.76
       },
-      "version": "v0.13.0"
+      "version": "v0.14.1"
     }
   },
   "下一位": {
     "$__mpe_code": {
       "position": {
-        "x": 1616,
-        "y": 68
+        "x": 1500,
+        "y": 31
       }
     },
     "action": {
       "param": {
         "target": [
-          1235,
-          357,
-          47,
-          53
+          1850,
+          540,
+          50,
+          70
         ]
       },
       "type": "Click"
@@ -41,11 +41,11 @@
       "type": "DirectHit"
     }
   },
-  "入口": {
+  "入口（导航）": {
     "$__mpe_code": {
       "position": {
         "x": 0,
-        "y": 176
+        "y": 383
       }
     },
     "action": {
@@ -68,11 +68,38 @@
       "type": "DirectHit"
     }
   },
+  "入口（无导航）": {
+    "$__mpe_code": {
+      "position": {
+        "x": 1500,
+        "y": 279
+      }
+    },
+    "action": {
+      "param": {
+        "target": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "type": "Click"
+    },
+    "next": [
+      "验证进入成功"
+    ],
+    "post_wait_freezes": 500,
+    "recognition": {
+      "param": {},
+      "type": "DirectHit"
+    }
+  },
   "判断进入成功": {
     "$__mpe_code": {
       "position": {
         "x": 1200,
-        "y": 292
+        "y": 498
       }
     },
     "action": {
@@ -80,8 +107,7 @@
       "type": "DoNothing"
     },
     "next": [
-      "进入学生详情（未固定）",
-      "进入学生详情（固定）"
+      "进入学生详情"
     ],
     "on_error": [
       "进入学生列表"
@@ -93,10 +119,10 @@
           "学生清单"
         ],
         "roi": [
-          21,
-          77,
-          194,
-          79
+          125,
+          125,
+          290,
+          90
         ]
       },
       "type": "OCR"
@@ -107,14 +133,12 @@
     "$__mpe_code": {
       "position": {
         "x": 2100,
-        "y": 224
+        "y": 212
       }
     },
     "action": {
-      "param": {
-        "custom_action": "my_action_111"
-      },
-      "type": "Custom"
+      "param": {},
+      "type": "DoNothing"
     },
     "max_hit": 300,
     "next": [
@@ -133,11 +157,31 @@
     },
     "timeout": 1000
   },
+  "新建节点1": {
+    "$__mpe_code": {
+      "position": {
+        "x": 2322,
+        "y": 504
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "DoNothing"
+    },
+    "recognition": {
+      "param": {
+        "lower": [245, 225, 107],
+        "upper": [255, 245, 127],
+        "roi": [425, 855, 12, 12]
+      },
+      "type": "ColorMatch"
+    }
+  },
   "检测是否位于详情页": {
     "$__mpe_code": {
       "position": {
-        "x": 1908,
-        "y": -100
+        "x": 1800,
+        "y": 0
       }
     },
     "action": {
@@ -166,8 +210,8 @@
   "结束": {
     "$__mpe_code": {
       "position": {
-        "x": 2440,
-        "y": 239
+        "x": 2400,
+        "y": 123
       }
     },
     "action": {
@@ -183,7 +227,7 @@
     "$__mpe_code": {
       "position": {
         "x": 600,
-        "y": 160
+        "y": 367
       }
     },
     "action": {
@@ -197,10 +241,10 @@
     "recognition": {
       "param": {
         "roi": [
-          1135,
+          1690,
           0,
-          145,
-          45
+          230,
+          70
         ],
         "template": [
           "HomeButton.png"
@@ -213,18 +257,11 @@
     "$__mpe_code": {
       "position": {
         "x": 900,
-        "y": 259
+        "y": 497
       }
     },
     "action": {
-      "param": {
-        "target_offset": [
-          0,
-          25,
-          0,
-          0
-        ]
-      },
+      "param": {},
       "type": "Click"
     },
     "next": [
@@ -236,25 +273,44 @@
     "pre_wait_freezes": 1000,
     "recognition": {
       "param": {
-        "roi": [
-          20,
-          609,
-          1111,
-          110
-        ],
-        "template": [
-          "StudentEntry.png"
+        "any_of": [
+          {
+            "param": {
+              "green_mask": true,
+              "roi": [
+                450,
+                925,
+                85,
+                130
+              ],
+              "template": [
+                "StudentEntry.png"
+              ]
+            },
+            "sub_name": "StudentEntry",
+            "type": "TemplateMatch"
+          },
+          {
+            "param": {
+              "expected": [
+                "學生",
+                "学生"
+              ],
+              "roi": "StudentEntry"
+            },
+            "type": "OCR"
+          }
         ]
       },
-      "type": "TemplateMatch"
+      "type": "Or"
     },
     "timeout": 5000
   },
-  "进入学生详情（固定）": {
+  "进入学生详情": {
     "$__mpe_code": {
       "position": {
         "x": 1500,
-        "y": 583
+        "y": 527
       }
     },
     "action": {
@@ -273,62 +329,46 @@
     ],
     "recognition": {
       "param": {
-        "green_mask": true,
-        "roi": [
-          30,
-          158,
-          1213,
-          555
-        ],
-        "template": [
-          "PinnedIcon.png"
+        "any_of": [
+          {
+            "param": {
+              "green_mask": true,
+              "roi": [
+                50,
+                250,
+                1790,
+                830
+              ],
+              "template": [
+                "PinnedIcon.png"
+              ]
+            },
+            "type": "TemplateMatch"
+          },
+          {
+            "param": {
+              "roi": [
+                50,
+                250,
+                1790,
+                830
+              ],
+              "template": [
+                "UnpinnedIcon.png"
+              ]
+            },
+            "type": "TemplateMatch"
+          }
         ]
       },
-      "type": "TemplateMatch"
-    }
-  },
-  "进入学生详情（未固定）": {
-    "$__mpe_code": {
-      "position": {
-        "x": 1500,
-        "y": 283
-      }
-    },
-    "action": {
-      "param": {
-        "target_offset": [
-          140,
-          140,
-          0,
-          0
-        ]
-      },
-      "type": "Click"
-    },
-    "next": [
-      "验证进入成功"
-    ],
-    "recognition": {
-      "param": {
-        "green_mask": true,
-        "roi": [
-          30,
-          158,
-          1213,
-          555
-        ],
-        "template": [
-          "UnpinnedIcon.png"
-        ]
-      },
-      "type": "TemplateMatch"
+      "type": "Or"
     }
   },
   "退出待机": {
     "$__mpe_code": {
       "position": {
         "x": 300,
-        "y": 176
+        "y": 383
       }
     },
     "action": {
@@ -356,12 +396,14 @@
     "$__mpe_code": {
       "position": {
         "x": 1800,
-        "y": 584
+        "y": 482
       }
     },
     "action": {
-      "param": {},
-      "type": "DoNothing"
+      "param": {
+        "custom_action": "clear_agent_cache"
+      },
+      "type": "Custom"
     },
     "next": [
       "图像识别"
