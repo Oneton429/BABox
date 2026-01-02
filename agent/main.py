@@ -3,8 +3,8 @@ import sys
 from maa.agent.agent_server import AgentServer
 from maa.toolkit import Toolkit
 
-import my_action
-import my_reco
+import action_clear_student_info_cache
+import reco_get_student_info
 
 
 def main():

@@ -1,33 +1,33 @@
 from maa.agent.agent_server import AgentServer
 from maa.custom_recognition import CustomRecognition
 from maa.context import Context
+from typing import Dict, Union
 
 import json
 import numpy
 import utils
 
 cnt: int = 0
-student_names: set[str] = set()
+student_info: Dict[str, Dict[str, Union[int, Dict[str, int], Dict[str, Dict[str, int]], None]]] = {}
 
-
-@AgentServer.custom_recognition("screenshot")
-class MyRecongition(CustomRecognition):
+@AgentServer.custom_recognition("get_student_info")
+class StudentInfo(CustomRecognition):
 
     def analyze(
         self,
         context: Context,
         argv: CustomRecognition.AnalyzeArg,
     ) -> CustomRecognition.AnalyzeResult:
-        # Image.fromarray(argv.image[..., ::-1]).save(f"debug/detail/{str(self.cnt).zfill(3)}.png")
+
         name = utils.getText(
             context, argv.image, roi=[106, 820, 290, 60], match=r"[\s\S]*"
         )
         if name is not None:
-            if name not in student_names:
+            if name not in student_info.keys():
                 utils.logger.info(f"[{str(cnt).zfill(3)}]识别到学生姓名: {name}")
-                student_names.add(name)
+                student_info[name] = self.process(context, argv.image)
                 utils.logger.info(
-                    json.dumps(self.process(context, argv.image), ensure_ascii=False)
+                    json.dumps(student_info[name], ensure_ascii=False)
                 )
                 return CustomRecognition.AnalyzeResult(
                     box=(0, 0, 0, 0),
@@ -88,6 +88,7 @@ class MyRecongition(CustomRecognition):
 
         equip1_level = 0
         if s := utils.getText(context, image, roi=[1068, 838, 31, 26], match=r"\d+"):
+            # utils.logger.info(f"Raw equip1 level text: {s}")
             fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
             equip1_level = int(fixed)
         equip1_tier = 0
@@ -96,6 +97,7 @@ class MyRecongition(CustomRecognition):
 
         equip2_level = 0
         if s := utils.getText(context, image, roi=[1208, 838, 31, 26], match=r"\d+"):
+            # utils.logger.info(f"Raw equip2 level text: {s}")
             fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
             equip2_level = int(fixed)
         equip2_tier = 0
@@ -104,6 +106,7 @@ class MyRecongition(CustomRecognition):
 
         equip3_level = 0
         if s := utils.getText(context, image, roi=[1347, 838, 31, 26], match=r"\d+"):
+            # utils.logger.info(f"Raw equip3 level text: {s}")
             fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
             equip3_level = int(fixed)
         equip3_tier = 0
