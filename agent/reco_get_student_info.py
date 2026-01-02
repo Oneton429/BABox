@@ -51,81 +51,112 @@ class StudentInfo(CustomRecognition):
 
     def process(self, context: Context, image: numpy.ndarray) -> dict:
         level = None
-        if s := utils.getText(
-            context, image, roi=[50, 880, 75, 35], match=r"[Ll][Vv]\.\d+"
-        ):
-            level = int(s[3:])
+        for _ in range(3):
+            if s := utils.getText(
+                context, image, roi=[50, 880, 75, 35], match=r"[Ll][Vv]\.\d+"
+            ):
+                level = int(s[3:])
+                break
         tier = self.getStudentStars(context, image)
         relationship = None
-        if s := utils.getText(context, image, roi=[67, 837, 35, 30], match=r"\d+"):
-            relationship = int(s)
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[67, 837, 35, 30], match=r"\d+"):
+                relationship = int(s)
+                break
+
         ex_level = None
-        if s := utils.getText(
-            context, image, roi=[1025, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
-        ):
-            ex_level = 5 if s == "MAX" else int(s[3:])
+        for _ in range(3):
+            if s := utils.getText(
+                context, image, roi=[1025, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+            ):
+                ex_level = 5 if s == "MAX" else int(s[3:])
+                break
         ns_level = None
-        if s := utils.getText(
-            context, image, roi=[1190, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
-        ):
-            ns_level = 10 if s == "MAX" else int(s[3:])
+        for _ in range(3):
+            if s := utils.getText(
+                context, image, roi=[1190, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+            ):
+                ns_level = 10 if s == "MAX" else int(s[3:])
+                break
 
         ps_level = None
-        if utils.templateMatch(
-            context, image, roi=[1390, 510, 55, 55], template_name="Locked.png"
-        ):
-            ps_level = 0
-        elif s := utils.getText(
-            context, image, roi=[1350, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
-        ):
-            ps_level = 10 if s == "MAX" else int(s[3:])
+        for _ in range(3):
+            if utils.templateMatch(
+                context, image, roi=[1390, 510, 55, 55], template_name="Locked.png"
+            ):
+                ps_level = 0
+                break
+            elif s := utils.getText(
+                context, image, roi=[1350, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+            ):
+                ps_level = 10 if s == "MAX" else int(s[3:])
+                break
 
         ss_level = None
-        if utils.templateMatch(
-            context, image, roi=[1550, 510, 55, 55], template_name="Locked.png"
-        ):
-            ss_level = 0
-        elif s := utils.getText(
-            context, image, roi=[1510, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
-        ):
-            ss_level = 10 if s == "MAX" else int(s[3:])
+        for _ in range(3):
+            if utils.templateMatch(
+                context, image, roi=[1550, 510, 55, 55], template_name="Locked.png"
+            ):
+                ss_level = 0
+                break
+            elif s := utils.getText(
+                context, image, roi=[1510, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+            ):
+                ss_level = 10 if s == "MAX" else int(s[3:])
+                break
 
         equip1_level = 0
-        if s := utils.getText(context, image, roi=[1068, 838, 31, 26], match=r"\d+"):
-            # utils.logger.info(f"Raw equip1 level text: {s}")
-            fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
-            equip1_level = int(fixed)
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1068, 838, 31, 26], match=r"\d+"):
+                # utils.logger.info(f"Raw equip1 level text: {s}")
+                fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
+                equip1_level = int(fixed)
+                break
         equip1_tier = 0
-        if s := utils.getText(context, image, roi=[1025, 923, 30, 25], match=r"T\d+"):
-            equip1_tier = int(s[1:])
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1025, 923, 30, 25], match=r"T\d+"):
+                equip1_tier = int(s[1:])
+                break
 
         equip2_level = 0
-        if s := utils.getText(context, image, roi=[1208, 838, 31, 26], match=r"\d+"):
-            # utils.logger.info(f"Raw equip2 level text: {s}")
-            fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
-            equip2_level = int(fixed)
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1208, 838, 31, 26], match=r"\d+"):
+                # utils.logger.info(f"Raw equip2 level text: {s}")
+                fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
+                equip2_level = int(fixed)
+                break
         equip2_tier = 0
-        if s := utils.getText(context, image, roi=[1165, 923, 30, 25], match=r"T\d+"):
-            equip2_tier = int(s[1:])
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1165, 923, 30, 25], match=r"T\d+"):
+                equip2_tier = int(s[1:])
+                break
 
         equip3_level = 0
-        if s := utils.getText(context, image, roi=[1347, 838, 31, 26], match=r"\d+"):
-            # utils.logger.info(f"Raw equip3 level text: {s}")
-            fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
-            equip3_level = int(fixed)
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1347, 838, 31, 26], match=r"\d+"):
+                # utils.logger.info(f"Raw equip3 level text: {s}")
+                fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
+                equip3_level = int(fixed)
+                break
         equip3_tier = 0
-        if s := utils.getText(context, image, roi=[1305, 923, 30, 25], match=r"T\d+"):
-            equip3_tier = int(s[1:])
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1305, 923, 30, 25], match=r"T\d+"):
+                equip3_tier = int(s[1:])
+                break
 
-        equip_love_tier = 0
-        if s := utils.getText(context, image, roi=[1445, 923, 30, 25], match=r"T\d+"):
-            equip_love_tier = int(s[1:])
+        equip_gear_tier = 0
+        for _ in range(3):
+            if s := utils.getText(context, image, roi=[1445, 923, 30, 25], match=r"T\d+"):
+                equip_gear_tier = int(s[1:])
+                break
 
         weapon_level = 0
-        if s := utils.getText(
-            context, image, roi=[1165, 680, 91, 35], match=r"[Ll][Vv]\.\d+"
-        ):
-            weapon_level = int(s[3:])
+        for _ in range(3):
+            if s := utils.getText(
+                context, image, roi=[1165, 680, 91, 35], match=r"[Ll][Vv]\.\d+"
+            ):
+                weapon_level = int(s[3:])
+                break
         weapon_tier = self.getWeaponStars(context, image)
 
         return {
@@ -142,7 +173,7 @@ class StudentInfo(CustomRecognition):
                 "level": weapon_level,
                 "tier": weapon_tier,
             },
-            "equip": {
+            "equipment": {
                 "1": {
                     "level": equip1_level,
                     "tier": equip1_tier,
@@ -155,8 +186,8 @@ class StudentInfo(CustomRecognition):
                     "level": equip3_level,
                     "tier": equip3_tier,
                 },
-                "love": {
-                    "tier": equip_love_tier,
+                "gear": {
+                    "tier": equip_gear_tier,
                 },
             },
         }
