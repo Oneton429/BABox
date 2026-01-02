@@ -24,24 +24,28 @@ class StudentInfo(CustomRecognition):
         )
         if name is not None:
             if name not in student_info.keys():
+                global cnt
+                cnt += 1
                 utils.logger.info(f"[{str(cnt).zfill(3)}]识别到学生姓名: {name}")
                 student_info[name] = self.process(context, argv.image)
-                utils.logger.info(
+                utils.logger.debug(
                     json.dumps(student_info[name], ensure_ascii=False)
                 )
                 return CustomRecognition.AnalyzeResult(
-                    box=(0, 0, 0, 0),
+                    box=(1850, 540, 50, 70),
                     detail={},
                 )
             else:
                 return CustomRecognition.AnalyzeResult(
-                    box=None,
-                    detail={},
+                    box=(1850, 540, 50, 70),
+                    detail={
+                        "endTask": True
+                    },
                 )
         else:
             utils.logger.warn(f"[{str(cnt).zfill(3)}]未识别到学生姓名")
             return CustomRecognition.AnalyzeResult(
-                box=(0, 0, 0, 0),
+                box=(1850, 540, 50, 70),
                 detail={},
             )
 
@@ -53,7 +57,7 @@ class StudentInfo(CustomRecognition):
             level = int(s[3:])
         tier = self.getStudentStars(context, image)
         relationship = None
-        if s := utils.getText(context, image, roi=[60, 825, 50, 50], match=r"\d+"):
+        if s := utils.getText(context, image, roi=[67, 837, 35, 30], match=r"\d+"):
             relationship = int(s)
         ex_level = None
         if s := utils.getText(

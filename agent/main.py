@@ -3,7 +3,9 @@ import sys
 from maa.agent.agent_server import AgentServer
 from maa.toolkit import Toolkit
 
+import action_check_and_stop_student_info_task
 import action_clear_student_info_cache
+import action_save_and_stop_student_info_task
 import reco_get_student_info
 
 

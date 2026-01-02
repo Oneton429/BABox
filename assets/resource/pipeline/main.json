@@ -4,48 +4,21 @@
       "filePath": "E:\\BABox\\assets\\resource\\pipeline\\main.json",
       "filename": "main",
       "isModifiedExternally": true,
-      "lastSyncTime": 1767280576119,
+      "lastSyncTime": 1767336827187,
       "prefix": "",
       "savedViewport": {
-        "x": -1594,
-        "y": -47,
-        "zoom": 0.76
+        "x": -1101,
+        "y": 70,
+        "zoom": 0.87
       },
       "version": "v0.14.1"
-    }
-  },
-  "下一位": {
-    "$__mpe_code": {
-      "position": {
-        "x": 1500,
-        "y": 31
-      }
-    },
-    "action": {
-      "param": {
-        "target": [
-          1850,
-          540,
-          50,
-          70
-        ]
-      },
-      "type": "Click"
-    },
-    "next": [
-      "检测是否位于详情页"
-    ],
-    "post_delay": 0,
-    "recognition": {
-      "param": {},
-      "type": "DirectHit"
     }
   },
   "入口（导航）": {
     "$__mpe_code": {
       "position": {
         "x": 0,
-        "y": 383
+        "y": 376
       }
     },
     "action": {
@@ -62,7 +35,15 @@
     "next": [
       "退出待机"
     ],
-    "post_wait_freezes": 500,
+    "post_wait_freezes": {
+      "target": [
+        1350,
+        925,
+        510,
+        120
+      ],
+      "time": 500
+    },
     "recognition": {
       "param": {},
       "type": "DirectHit"
@@ -72,7 +53,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1500,
-        "y": 279
+        "y": 272
       }
     },
     "action": {
@@ -89,7 +70,15 @@
     "next": [
       "验证进入成功"
     ],
-    "post_wait_freezes": 500,
+    "post_wait_freezes": {
+      "target": [
+        1350,
+        925,
+        510,
+        120
+      ],
+      "time": 500
+    },
     "recognition": {
       "param": {},
       "type": "DirectHit"
@@ -99,7 +88,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1200,
-        "y": 498
+        "y": 491
       }
     },
     "action": {
@@ -133,16 +122,18 @@
     "$__mpe_code": {
       "position": {
         "x": 2100,
-        "y": 212
+        "y": 185
       }
     },
     "action": {
-      "param": {},
-      "type": "DoNothing"
+      "param": {
+        "custom_action": "check_and_stop_student_info_task"
+      },
+      "type": "Custom"
     },
     "max_hit": 300,
     "next": [
-      "下一位"
+      "检测是否位于详情页"
     ],
     "on_error": [
       "结束"
@@ -156,26 +147,6 @@
       "type": "Custom"
     },
     "timeout": 1000
-  },
-  "新建节点1": {
-    "$__mpe_code": {
-      "position": {
-        "x": 2322,
-        "y": 504
-      }
-    },
-    "action": {
-      "param": {},
-      "type": "DoNothing"
-    },
-    "recognition": {
-      "param": {
-        "lower": [245, 225, 107],
-        "upper": [255, 245, 127],
-        "roi": [425, 855, 12, 12]
-      },
-      "type": "ColorMatch"
-    }
   },
   "检测是否位于详情页": {
     "$__mpe_code": {
@@ -201,6 +172,12 @@
         "expected": [
           "基本情报",
           "基本情報"
+        ],
+        "roi": [
+          1000,
+          180,
+          270,
+          80
         ]
       },
       "type": "OCR"
@@ -211,12 +188,14 @@
     "$__mpe_code": {
       "position": {
         "x": 2400,
-        "y": 123
+        "y": 82
       }
     },
     "action": {
-      "param": {},
-      "type": "StopTask"
+      "param": {
+        "custom_action": "save_and_stop_student_info_task"
+      },
+      "type": "Custom"
     },
     "recognition": {
       "param": {},
@@ -227,7 +206,7 @@
     "$__mpe_code": {
       "position": {
         "x": 600,
-        "y": 367
+        "y": 360
       }
     },
     "action": {
@@ -237,7 +216,15 @@
     "next": [
       "进入学生列表"
     ],
-    "post_wait_freezes": 1000,
+    "post_wait_freezes": {
+      "target": [
+        1350,
+        925,
+        510,
+        120
+      ],
+      "time": 1000
+    },
     "recognition": {
       "param": {
         "roi": [
@@ -257,7 +244,7 @@
     "$__mpe_code": {
       "position": {
         "x": 900,
-        "y": 497
+        "y": 490
       }
     },
     "action": {
@@ -310,7 +297,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1500,
-        "y": 527
+        "y": 520
       }
     },
     "action": {
@@ -368,7 +355,7 @@
     "$__mpe_code": {
       "position": {
         "x": 300,
-        "y": 383
+        "y": 376
       }
     },
     "action": {
@@ -396,7 +383,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1800,
-        "y": 482
+        "y": 475
       }
     },
     "action": {
@@ -418,6 +405,12 @@
         "expected": [
           "基本情报",
           "基本情報"
+        ],
+        "roi": [
+          1000,
+          180,
+          270,
+          80
         ]
       },
       "type": "OCR"
