@@ -40,10 +40,37 @@ body {
 	margin-right: 10px;
 	min-width: 87.47px;
 }
+.level-info {
+    font-size: 16px;
+    color: black;
+    letter-spacing: 0;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.info-squares {
+    display: flex;
+    gap: 4px;
+	margin-bottom: 5px;
+}
+.info-square {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid black;
+}
+.square-icon {
+    width: 22px;
+    height: 22px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 .level-bond {
 	display: flex;
 	align-items: center;
-	margin-bottom: 5px;
 	font-size: 18px;
 	font-weight: bold;
 	height: 40px;
@@ -240,4 +267,12 @@ body {
 .export-btn:disabled {
 	background-color: #cccccc;
 	cursor: not-allowed;
+}
+.ui-icon-Type_Attack {
+	width: 18px;
+	height: 18px;
+}
+.ui-icon-Type_Defense {
+	width: 18px;
+	height: 18px;
 }

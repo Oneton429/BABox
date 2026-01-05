@@ -26,6 +26,18 @@ HEART_SVG = '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 
 STAR_SVG = '<svg viewBox="0 0 576 512"><path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>'
 LOCK_SVG = '<svg viewBox="0 0 448 512"><path fill="currentColor" d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z"/></svg>'
 
+TYPE_COLORS = {
+    "Explosion": "#9B2221",
+    "LightArmor": "#9B2221",
+    "Pierce": "#A97031",
+    "HeavyArmor": "#A97031",
+    "Mystic": "#376D98",
+    "Unarmed": "#376D98",
+    "Sonic": "#8A389F",
+    "ElasticArmor": "#8A389F",
+    "Front": "#D2232A",
+    "Back": "#0078D7",
+}
 
 def load_json(path):
     with open(path, 'r', encoding='utf-8') as f:
@@ -123,6 +135,7 @@ def work():
     # Prepare to collect body content and icons
     body_content = ""
     equipment_icons_cache = {} # icon_name -> base64_str
+    ui_icons_cache = {} # icon_name -> base64_str
 
     for name, data in box_data.items():
         display_name = name
@@ -141,7 +154,39 @@ def work():
             s_static_data = student_name_map[name]
 
         student_id = s_static_data['Id']
+        position = s_static_data.get('Position', '')
+        tactic_role = s_static_data.get('TacticRole', '')
+        bullet_type = s_static_data.get('BulletType', '')
+        armor_type = s_static_data.get('ArmorType', '')
 
+        # Ensure icons are in cache
+        for ui_icon in [f"Role_{tactic_role}", "Type_Attack", "Type_Defense"]:
+            if ui_icon not in ui_icons_cache:
+                icon_path = IMAGE_DIR / "ui" / f"{ui_icon}.png"
+                if icon_path.exists():
+                    with open(icon_path, "rb") as img_f:
+                        ui_icons_cache[ui_icon] = base64.b64encode(img_f.read()).decode('utf-8')
+                else:
+                    logger.warn(f"UI icon not found: {icon_path}")
+                    ui_icons_cache[ui_icon] = ""
+
+        safe_role = f"Role_{tactic_role}".replace(' ', '_').replace('.', '_')
+        safe_attack = "Type_Attack".replace(' ', '_').replace('.', '_')
+        safe_defense = "Type_Defense".replace(' ', '_').replace('.', '_')
+
+        squares_html = f"""
+        <div class="info-squares">
+            <div class="info-square" style="background-color: {TYPE_COLORS.get(position, '#F5A623')};">
+                <div class="square-icon ui-icon-{safe_role}"></div>
+            </div>
+            <div class="info-square" style="background-color: {TYPE_COLORS.get(bullet_type, '#000000')};">
+                <div class="square-icon ui-icon-{safe_attack}"></div>
+            </div>
+            <div class="info-square" style="background-color: {TYPE_COLORS.get(armor_type, '#000000')};">
+                <div class="square-icon ui-icon-{safe_defense}"></div>
+            </div>
+        </div>
+        """
         # Student Icon
         icon_path = IMAGE_DIR / "student" / f"{student_id}.webp"
         with open(icon_path, "rb") as img_f:
@@ -277,6 +322,7 @@ def work():
             <div class="student-name">{display_name}</div>
         </div>
         <div class="stats">
+            {squares_html}
             <div class="level-bond">
                 <div class="icon-wrapper">
                     <span class="icon-shape bond-heart-shape">{HEART_SVG}</span>
@@ -301,6 +347,11 @@ def work():
         if b64_data:
             safe_icon_name = icon_name.replace(' ', '_').replace('.', '_')
             generated_css += f""".eq-icon-{safe_icon_name} {{ background-image: url('data:image/webp;base64,{b64_data}'); }}\n"""
+
+    for icon_name, b64_data in ui_icons_cache.items():
+        if b64_data:
+            safe_icon_name = icon_name.replace(' ', '_').replace('.', '_')
+            generated_css += f""".ui-icon-{safe_icon_name} {{ background-image: url('data:image/png;base64,{b64_data}'); }}\n"""
 
     with open(CSS_FILE, "r", encoding="utf-8") as f:
         style_css = f.read()
