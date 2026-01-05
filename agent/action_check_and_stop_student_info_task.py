@@ -3,8 +3,6 @@ from maa.custom_action import CustomAction
 from maa.context import Context
 from maa.define import CustomRecognitionResult
 
-import json
-import reco_get_student_info
 import utils
 
 @AgentServer.custom_action("check_and_stop_student_info_task")

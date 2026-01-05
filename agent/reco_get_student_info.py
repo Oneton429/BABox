@@ -60,7 +60,7 @@ class StudentInfo(CustomRecognition):
         tier = self.getStudentStars(context, image)
         relationship = None
         for _ in range(3):
-            if s := utils.getText(context, image, roi=[67, 837, 35, 30], match=r"\d+"):
+            if s := utils.getText(context, image, roi=[69, 839, 30, 25], match=r"\d+"):
                 relationship = int(s)
                 break
 

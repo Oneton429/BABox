@@ -60,6 +60,11 @@
         {
             "name": "Box导出（无导航）",
             "entry": "入口（无导航）"
+        },
+        {
+            "name": "导出为HTML",
+            "entry": "导出为HTML",
+            "default_check": true
         }
     ],
     "option": {

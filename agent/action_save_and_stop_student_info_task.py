@@ -19,7 +19,6 @@ class SaveAndStopStudentInfoTask(CustomAction):
         try:
             with open("box.json", "w", encoding="UTF-8") as f:
                 json.dump(reco_get_student_info.student_info, f, ensure_ascii=False, indent=2)
-            utils.logger.info(json.dumps(reco_get_student_info.student_info, ensure_ascii=False))
             utils.logger.info("学生信息已保存至 box.json 文件。")
         except Exception as e:
             utils.logger.error(f"学生信息任务停止失败: {e}.")

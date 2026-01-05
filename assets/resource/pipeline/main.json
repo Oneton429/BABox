@@ -4,14 +4,14 @@
       "filePath": "E:\\BABox\\assets\\resource\\pipeline\\main.json",
       "filename": "main",
       "isModifiedExternally": true,
-      "lastSyncTime": 1767336827187,
+      "lastSyncTime": 1767364411688,
       "prefix": "",
       "savedViewport": {
-        "x": -1101,
-        "y": 70,
+        "x": -930,
+        "y": 69,
         "zoom": 0.87
       },
-      "version": "v0.14.1"
+      "version": "v0.14.2"
     }
   },
   "入口（导航）": {
@@ -165,7 +165,7 @@
     "on_error": [
       "结束"
     ],
-    "post_delay": 0,
+    "post_wait_freezes": 300,
     "pre_delay": 0,
     "recognition": {
       "param": {
@@ -415,5 +415,14 @@
       },
       "type": "OCR"
     }
+  },
+  "导出为HTML": {
+    "action": {
+      "type": "Custom",
+      "param":{
+        "custom_action": "export_to_html"
+      }
+    },
+    "recognition": "DirectHit"
   }
 }
