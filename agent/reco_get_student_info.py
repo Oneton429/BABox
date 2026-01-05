@@ -53,9 +53,9 @@ class StudentInfo(CustomRecognition):
         level = None
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[50, 880, 75, 35], match=r"[Ll][Vv]\.\d+"
+                context, image, roi=[50, 880, 87, 35], match=r"([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                level = int(s[3:])
+                level = int(s[3:]) if s.lower().startswith("lv.") else int(s[2:])
                 break
         tier = self.getStudentStars(context, image)
         relationship = None
@@ -67,16 +67,16 @@ class StudentInfo(CustomRecognition):
         ex_level = None
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[1025, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+                context, image, roi=[1025, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ex_level = 5 if s == "MAX" else int(s[3:])
+                ex_level = 5 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
         ns_level = None
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[1190, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+                context, image, roi=[1190, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ns_level = 10 if s == "MAX" else int(s[3:])
+                ns_level = 10 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
 
         ps_level = None
@@ -87,9 +87,9 @@ class StudentInfo(CustomRecognition):
                 ps_level = 0
                 break
             elif s := utils.getText(
-                context, image, roi=[1350, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+                context, image, roi=[1350, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ps_level = 10 if s == "MAX" else int(s[3:])
+                ps_level = 10 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
 
         ss_level = None
@@ -100,14 +100,14 @@ class StudentInfo(CustomRecognition):
                 ss_level = 0
                 break
             elif s := utils.getText(
-                context, image, roi=[1510, 605, 120, 30], match=r"(MAX)||[Ll][Vv]\.\d+"
+                context, image, roi=[1510, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ss_level = 10 if s == "MAX" else int(s[3:])
+                ss_level = 10 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
 
         equip1_level = 0
         for _ in range(3):
-            if s := utils.getText(context, image, roi=[1068, 838, 31, 26], match=r"\d+"):
+            if s := utils.getText(context, image, roi=[1068, 838, 41, 26], match=r"\d+"):
                 # utils.logger.info(f"Raw equip1 level text: {s}")
                 fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
                 equip1_level = int(fixed)
@@ -120,7 +120,7 @@ class StudentInfo(CustomRecognition):
 
         equip2_level = 0
         for _ in range(3):
-            if s := utils.getText(context, image, roi=[1208, 838, 31, 26], match=r"\d+"):
+            if s := utils.getText(context, image, roi=[1208, 838, 41, 26], match=r"\d+"):
                 # utils.logger.info(f"Raw equip2 level text: {s}")
                 fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
                 equip2_level = int(fixed)
@@ -133,7 +133,7 @@ class StudentInfo(CustomRecognition):
 
         equip3_level = 0
         for _ in range(3):
-            if s := utils.getText(context, image, roi=[1347, 838, 31, 26], match=r"\d+"):
+            if s := utils.getText(context, image, roi=[1347, 838, 41, 26], match=r"\d+"):
                 # utils.logger.info(f"Raw equip3 level text: {s}")
                 fixed = "".join({"O": "0", "o": "0", "A": "4"}.get(ch, ch) for ch in s if ch in "0123456789OAoA")
                 equip3_level = int(fixed)
@@ -153,9 +153,9 @@ class StudentInfo(CustomRecognition):
         weapon_level = 0
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[1165, 680, 91, 35], match=r"[Ll][Vv]\.\d+"
+                context, image, roi=[1165, 680, 91, 34], match=r"[Ll][Vv]\.\d+||(等级\d+)"
             ):
-                weapon_level = int(s[3:])
+                weapon_level = int(s[3:]) if s.lower().startswith("lv.") else int(s[2:])
                 break
         weapon_tier = self.getWeaponStars(context, image)
 

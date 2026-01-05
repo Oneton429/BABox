@@ -144,7 +144,7 @@ def work():
             matches = difflib.get_close_matches(name, student_name_map.keys(), n=1, cutoff=0.6)
             if matches:
                 matched_name = matches[0]
-                logger.warn(f"Student '{name}' not found, using fuzzy match '{matched_name}'")
+                logger.info(f"Student '{name}' not found, using fuzzy match '{matched_name}'")
                 s_static_data = student_name_map[matched_name]
                 display_name = matched_name
             else:
