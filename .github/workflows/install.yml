@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [win, macos, linux, android]
+        os: [win, macos, linux]
         arch: [aarch64, x86_64]
       fail-fast: false
 
@@ -108,6 +108,21 @@ jobs:
         run: |
           rm -rf MFA/runtimes
 
+      - name: Setup Embed Python
+        if: matrix.os != 'linux' && matrix.os != 'android'
+        shell: bash
+        run: |
+          python3 tools/ci/setup_embed_python.py ${{ matrix.os }} ${{ matrix.arch }}
+          if [[ "${{ matrix.os }}" == "macos" ]]; then
+            EMBED_PYTHON_PATH="./install/python/bin/python3"
+            if [ -f "$EMBED_PYTHON_PATH" ]; then
+              echo "Setting execute permission for $EMBED_PYTHON_PATH"
+              chmod +x "$EMBED_PYTHON_PATH"
+            else
+              echo "Warning: Embedded Python executable not found at $EMBED_PYTHON_PATH. Skipping chmod."
+            fi
+          fi
+
       - name: Install
         shell: bash
         run: |
@@ -128,6 +143,18 @@ jobs:
           python -m pip install -r ./requirements.txt
           python ./install.py ${{ needs.meta.outputs.tag }} ${{ matrix.os }} ${{ matrix.arch }}
           cd ..
+
+      - name: Download Python dependencies on Windows
+        if: matrix.os == 'win'
+        shell: bash
+        run: |
+          python3 tools/ci/download_deps.py --deps-dir ./install/python/Lib/site-packages --os ${{ matrix.os }} --arch ${{ matrix.arch }}
+
+      - name: Download Python dependencies on macOS
+        if: matrix.os == 'macos'
+        shell: bash
+        run: |
+          python3 tools/ci/download_deps.py --deps-dir ./install/python/lib/python3.12/site-packages --os ${{ matrix.os }} --arch ${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
         with:

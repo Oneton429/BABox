@@ -1,0 +1,4 @@
+MaaFw==5.3.0
+MaaAgentBinary==1.0.1
+numpy==2.4.0
+StrEnum==0.4.15
