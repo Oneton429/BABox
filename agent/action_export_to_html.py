@@ -72,6 +72,10 @@ def get_image_base64(path):
         return ""
 
 
+def normalize_name(name):
+    return name.replace('（', '(').replace('）', ')').strip()
+
+
 def work():
     box_data = load_json(BOX_JSON_PATH)
     equipment_data = load_json(EQUIPMENT_JSON_PATH)
@@ -79,6 +83,7 @@ def work():
     # Create mappings
     # Name -> Student Data
     language_maps = {}
+    language_maps_norm = {}
 
     for lang in LANGUAGES:
         file_path = BASE_DIR / 'resource' / f'students.{lang}.json'
@@ -86,10 +91,13 @@ def work():
             try:
                 lang_data = load_json(file_path)
                 current_map = {}
+                current_map_norm = {}
                 for _, sdata in lang_data.items():
                     if 'Name' in sdata:
                         current_map[sdata['Name']] = sdata
+                        current_map_norm[normalize_name(sdata['Name'])] = sdata
                 language_maps[lang] = current_map
+                language_maps_norm[lang] = current_map_norm
             except Exception as e:
                 logger.error(f"Error loading {file_path}: {e}")
 
@@ -101,17 +109,18 @@ def work():
 
     logger.info("确定当前客户端语言...")
 
-    for lang, s_map in language_maps.items():
+    for lang, s_map_norm in language_maps_norm.items():
         match_count = 0
         for name, data in box_data.items():
+            norm_name = normalize_name(name)
             matched_sdata = None
-            if name in s_map:
-                matched_sdata = s_map[name]
+            if norm_name in s_map_norm:
+                matched_sdata = s_map_norm[norm_name]
             else:
                 # Fuzzy match check
-                matches = difflib.get_close_matches(name, s_map.keys(), n=1, cutoff=0.6)
+                matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=1, cutoff=0.6)
                 if matches:
-                    matched_sdata = s_map[matches[0]]
+                    matched_sdata = s_map_norm[matches[0]]
 
             if matched_sdata:
                 match_count += 1
@@ -124,6 +133,7 @@ def work():
 
     logger.info(f"使用语言: '{best_lang}'，匹配数: {max_match_count}")
     student_name_map = language_maps[best_lang]
+    student_name_map_norm = language_maps_norm[best_lang]
 
     # (Category, Tier) -> Equipment Icon
     equipment_map = {}
@@ -137,21 +147,46 @@ def work():
     equipment_icons_cache = {} # icon_name -> base64_str
     ui_icons_cache = {} # icon_name -> base64_str
 
+    student_id_map = {v['Id']: v for v in student_name_map.values()}
+
     for name, data in box_data.items():
         display_name = name
-        if name not in student_name_map:
-            # Fuzzy matching
-            matches = difflib.get_close_matches(name, student_name_map.keys(), n=1, cutoff=0.6)
-            if matches:
-                matched_name = matches[0]
-                logger.info(f"Student '{name}' not found, using fuzzy match '{matched_name}'")
-                s_static_data = student_name_map[matched_name]
-                display_name = matched_name
+        norm_name = normalize_name(name)
+        if norm_name not in student_name_map_norm:
+            found_data = None
+            found_lang = None
+
+            # 1. Exact match in other languages
+            for lang, s_map_norm in language_maps_norm.items():
+                if norm_name in s_map_norm:
+                    found_data = s_map_norm[norm_name]
+                    found_lang = lang
+                    break
+
+            # 2. Fuzzy match in all languages
+            if not found_data:
+                for lang, s_map_norm in language_maps_norm.items():
+                    matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=1, cutoff=0.6)
+                    if matches:
+                        found_data = s_map_norm[matches[0]]
+                        found_lang = lang
+                        break
+
+            if found_data:
+                sid = found_data['Id']
+                if sid in student_id_map:
+                    s_static_data = student_id_map[sid]
+                    display_name = s_static_data['Name']
+                    logger.info(f"Student '{name}' found via {found_lang} ID {sid}, using local name '{display_name}'")
+                else:
+                    s_static_data = found_data
+                    display_name = found_data['Name']
+                    logger.info(f"Student '{name}' found via {found_lang} ID {sid} (local data missing)")
             else:
                 logger.warn(f"Student {name} not found in any resource/students.*.json")
                 continue
         else:
-            s_static_data = student_name_map[name]
+            s_static_data = student_name_map_norm[norm_name]
 
         student_id = s_static_data['Id']
         position = s_static_data.get('Position', '')
