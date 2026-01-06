@@ -73,7 +73,7 @@ def get_image_base64(path):
 
 
 def normalize_name(name):
-    return name.replace('（', '(').replace('）', ')').strip()
+    return name.replace(' (', '(').replace(' （', '(').replace('（', '(').replace('）', ')').strip()
 
 
 def work():
@@ -116,11 +116,6 @@ def work():
             matched_sdata = None
             if norm_name in s_map_norm:
                 matched_sdata = s_map_norm[norm_name]
-            else:
-                # Fuzzy match check
-                matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=1, cutoff=0.6)
-                if matches:
-                    matched_sdata = s_map_norm[matches[0]]
 
             if matched_sdata:
                 match_count += 1
@@ -150,7 +145,6 @@ def work():
     student_id_map = {v['Id']: v for v in student_name_map.values()}
 
     for name, data in box_data.items():
-        display_name = name
         norm_name = normalize_name(name)
         if norm_name not in student_name_map_norm:
             found_data = None
@@ -165,22 +159,29 @@ def work():
 
             # 2. Fuzzy match in all languages
             if not found_data:
+                best_score = 0
                 for lang, s_map_norm in language_maps_norm.items():
-                    matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=1, cutoff=0.6)
-                    if matches:
-                        found_data = s_map_norm[matches[0]]
-                        found_lang = lang
-                        break
+                    matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=5, cutoff=0.5)
+                    for match in matches:
+                        score = difflib.SequenceMatcher(None, norm_name, match).ratio()
+
+                        # Position match bonus
+                        # e.g. "bd" should match "bc" (b match at 0) better than "ab" (b match at 0 vs 1)
+                        same_pos_count = sum(1 for c1, c2 in zip(norm_name, match) if c1 == c2)
+                        score += same_pos_count * 0.01
+
+                        if score > best_score:
+                            best_score = score
+                            found_data = s_map_norm[match]
+                            found_lang = lang
 
             if found_data:
                 sid = found_data['Id']
                 if sid in student_id_map:
                     s_static_data = student_id_map[sid]
-                    display_name = s_static_data['Name']
-                    logger.info(f"Student '{name}' found via {found_lang} ID {sid}, using local name '{display_name}'")
+                    logger.info(f"Student '{name}' found via {found_lang} ID {sid}, using local name '{s_static_data.get('Name', name)}'")
                 else:
                     s_static_data = found_data
-                    display_name = found_data['Name']
                     logger.info(f"Student '{name}' found via {found_lang} ID {sid} (local data missing)")
             else:
                 logger.warn(f"Student {name} not found in any resource/students.*.json")
@@ -193,6 +194,7 @@ def work():
         tactic_role = s_static_data.get('TacticRole', '')
         bullet_type = s_static_data.get('BulletType', '')
         armor_type = s_static_data.get('ArmorType', '')
+        display_name = s_static_data.get('Name', name)
 
         # Ensure icons are in cache
         for ui_icon in [f"Role_{tactic_role}", "Type_Attack", "Type_Defense"]:

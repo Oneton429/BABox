@@ -455,4 +455,5 @@ debug
 
 # output
 box.json
+box.html
 assets/agent
