@@ -130,15 +130,16 @@ def install_agent():
     with open(install_path / "interface.json", "r", encoding="utf-8") as f:
         interface = jsonc.load(f)
 
-    if os_name == "win":
-        interface["agent"]["child_exec"] = r"python/python.exe"
-    elif os_name == "macos":
-        interface["agent"]["child_exec"] = r"python/bin/python3"
-    elif os_name == "linux":
-        interface["agent"]["child_exec"] = r".venv/bin/python3"
-    else:
-        print(f"Unsupported OS: {os_name}")
-        sys.exit(1)
+    if version.startswith("v"):
+        if os_name == "win":
+            interface["agent"]["child_exec"] = r"python/python.exe"
+        elif os_name == "macos":
+            interface["agent"]["child_exec"] = r"python/bin/python3"
+        elif os_name == "linux":
+            interface["agent"]["child_exec"] = r".venv/bin/python3"
+        else:
+            print(f"Unsupported OS: {os_name}")
+            sys.exit(1)
 
     interface["agent"]["child_args"] = ["-u", r"agent/main.py"]
 
