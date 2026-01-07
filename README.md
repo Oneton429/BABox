@@ -2,6 +2,10 @@
 
 一个碧蓝档案学生练度的导出工具
 
+## 预览
+
+![demo](docs/demo.png)
+
 ## 鸣谢
 
 本项目由 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 强力驱动！
