@@ -76,9 +76,8 @@ def normalize_name(name):
     return name.replace(' (', '(').replace(' （', '(').replace('（', '(').replace('）', ')').strip()
 
 
-def work():
+def match_students():
     box_data = load_json(BOX_JSON_PATH)
-    equipment_data = load_json(EQUIPMENT_JSON_PATH)
 
     # Create mappings
     # Name -> Student Data
@@ -129,6 +128,80 @@ def work():
     logger.info(f"使用语言: '{best_lang}'，匹配数: {max_match_count}")
     student_name_map = language_maps[best_lang]
     student_name_map_norm = language_maps_norm[best_lang]
+    student_id_map = {v['Id']: v for v in student_name_map.values()}
+
+    # Resolve matches in two phases to prevent fuzzy matches from claiming students that are already exactly matched
+    resolved_pairs = {}
+    matched_student_ids = set()
+    pending_names = []
+
+    # Phase 1: Exact matches
+    for name in box_data:
+        norm_name = normalize_name(name)
+        found_data = None
+
+        # 1a. Exact match in current language
+        if norm_name in student_name_map_norm:
+            found_data = student_name_map_norm[norm_name]
+        else:
+            # 1b. Exact match in other languages
+            for lang, s_map_norm in language_maps_norm.items():
+                if norm_name in s_map_norm:
+                    found_data = s_map_norm[norm_name]
+                    # Log cross-language exact match
+                    sid = found_data['Id']
+                    local_name = student_id_map.get(sid, {}).get('Name', name)
+                    logger.info(f"Student '{name}' exact matched in {lang} (ID {sid}), using local name '{local_name}'")
+                    break
+
+        if found_data:
+            resolved_pairs[name] = found_data
+            matched_student_ids.add(found_data['Id'])
+        else:
+            pending_names.append(name)
+
+    # Phase 2: Fuzzy matches
+    for name in pending_names:
+        norm_name = normalize_name(name)
+
+        best_score = 0
+        found_data = None
+        found_lang = None
+
+        for lang, s_map_norm in language_maps_norm.items():
+            # Get more candidates to skip already matched ones
+            matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=20, cutoff=0.5)
+            for match in matches:
+                candidate = s_map_norm[match]
+                # Skip if this student ID is already matched by an exact match or a better fuzzy match
+                if candidate['Id'] in matched_student_ids:
+                    continue
+
+                score = difflib.SequenceMatcher(None, norm_name, match).ratio()
+
+                # Position match bonus
+                # e.g. "bd" should match "bc" (b match at 0) better than "ab" (b match at 0 vs 1)
+                same_pos_count = sum(1 for c1, c2 in zip(norm_name, match) if c1 == c2)
+                score += same_pos_count * 0.01
+
+                if score > best_score:
+                    best_score = score
+                    found_data = candidate
+                    found_lang = lang
+
+        if found_data:
+            resolved_pairs[name] = found_data
+            matched_student_ids.add(found_data['Id'])
+
+            sid = found_data['Id']
+            local_name = student_id_map.get(sid, {}).get('Name', name)
+            logger.info(f"Student '{name}' fuzzy matched to '{local_name}' via {found_lang} ID {sid} (score={best_score:.2f})")
+
+    return box_data, resolved_pairs, best_lang, student_id_map
+
+
+def generate_html(box_data, resolved_pairs, best_lang, student_id_map):
+    equipment_data = load_json(EQUIPMENT_JSON_PATH)
 
     # (Category, Tier) -> Equipment Icon
     equipment_map = {}
@@ -142,52 +215,15 @@ def work():
     equipment_icons_cache = {} # icon_name -> base64_str
     ui_icons_cache = {} # icon_name -> base64_str
 
-    student_id_map = {v['Id']: v for v in student_name_map.values()}
-
     for name, data in box_data.items():
-        norm_name = normalize_name(name)
-        if norm_name not in student_name_map_norm:
-            found_data = None
-            found_lang = None
-
-            # 1. Exact match in other languages
-            for lang, s_map_norm in language_maps_norm.items():
-                if norm_name in s_map_norm:
-                    found_data = s_map_norm[norm_name]
-                    found_lang = lang
-                    break
-
-            # 2. Fuzzy match in all languages
-            if not found_data:
-                best_score = 0
-                for lang, s_map_norm in language_maps_norm.items():
-                    matches = difflib.get_close_matches(norm_name, s_map_norm.keys(), n=5, cutoff=0.5)
-                    for match in matches:
-                        score = difflib.SequenceMatcher(None, norm_name, match).ratio()
-
-                        # Position match bonus
-                        # e.g. "bd" should match "bc" (b match at 0) better than "ab" (b match at 0 vs 1)
-                        same_pos_count = sum(1 for c1, c2 in zip(norm_name, match) if c1 == c2)
-                        score += same_pos_count * 0.01
-
-                        if score > best_score:
-                            best_score = score
-                            found_data = s_map_norm[match]
-                            found_lang = lang
-
-            if found_data:
-                sid = found_data['Id']
-                if sid in student_id_map:
-                    s_static_data = student_id_map[sid]
-                    logger.info(f"Student '{name}' found via {found_lang} ID {sid}, using local name '{s_static_data.get('Name', name)}'")
-                else:
-                    s_static_data = found_data
-                    logger.info(f"Student '{name}' found via {found_lang} ID {sid} (local data missing)")
-            else:
-                logger.warn(f"Student {name} not found in any resource/students.*.json")
-                continue
+        if name in resolved_pairs:
+            s_static_data = resolved_pairs[name]
+            # Use local language data if available
+            if s_static_data['Id'] in student_id_map:
+                s_static_data = student_id_map[s_static_data['Id']]
         else:
-            s_static_data = student_name_map_norm[norm_name]
+            logger.warn(f"Student {name} not found in any resource/students.*.json")
+            continue
 
         student_id = s_static_data['Id']
         position = s_static_data.get('Position', '')
@@ -423,6 +459,11 @@ def work():
         f.write(compressed_html)
 
     os.startfile(OUTPUT_FILE)
+
+
+def work():
+    box_data, resolved_pairs, best_lang, student_id_map = match_students()
+    generate_html(box_data, resolved_pairs, best_lang, student_id_map)
 
 if __name__ == "__main__":
     work()

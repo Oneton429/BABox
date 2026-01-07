@@ -39,6 +39,7 @@ def templateMatch(
                 "recognition": "TemplateMatch",
                 "roi": roi,
                 "template_name": template_name,
+                "only_rec": True
             }
         },
     )

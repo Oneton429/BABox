@@ -67,16 +67,16 @@ class StudentInfo(CustomRecognition):
         ex_level = None
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[1025, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
+                context, image, roi=[1025, 590, 120, 50], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ex_level = 5 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
+                ex_level = 5 if (s.upper() == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
         ns_level = None
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[1190, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
+                context, image, roi=[1190, 590, 120, 50], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ns_level = 10 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
+                ns_level = 10 if (s.upper() == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
 
         ps_level = None
@@ -87,9 +87,9 @@ class StudentInfo(CustomRecognition):
                 ps_level = 0
                 break
             elif s := utils.getText(
-                context, image, roi=[1350, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
+                context, image, roi=[1350, 590, 120, 50], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ps_level = 10 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
+                ps_level = 10 if (s.upper() == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
 
         ss_level = None
@@ -100,9 +100,9 @@ class StudentInfo(CustomRecognition):
                 ss_level = 0
                 break
             elif s := utils.getText(
-                context, image, roi=[1510, 605, 120, 30], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
+                context, image, roi=[1510, 590, 120, 50], match=r"(MAX)||(最大值)||([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                ss_level = 10 if (s == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
+                ss_level = 10 if (s.upper() == "MAX" or s == "最大值") else (int(s[3:]) if s.lower().startswith("lv.") else int(s[2:]))
                 break
 
         equip1_level = 0
