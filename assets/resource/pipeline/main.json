@@ -4,12 +4,12 @@
       "filePath": "E:\\BABox\\assets\\resource\\pipeline\\main.json",
       "filename": "main",
       "isModifiedExternally": true,
-      "lastSyncTime": 1767616249809,
+      "lastSyncTime": 1767771579222,
       "prefix": "",
       "savedViewport": {
-        "x": -421,
-        "y": -21,
-        "zoom": 0.76
+        "x": -1085,
+        "y": -89,
+        "zoom": 1
       },
       "version": "v0.14.2"
     }
@@ -88,7 +88,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1200,
-        "y": 267
+        "y": 258
       }
     },
     "action": {
@@ -104,19 +104,18 @@
     ],
     "recognition": {
       "param": {
-        "expected": [
-          "學生清單",
-          "学生清单",
-          "成员列表"
-        ],
+        "green_mask": true,
         "roi": [
           10,
           55,
           430,
           135
+        ],
+        "template": [
+          "StudentEntry.png"
         ]
       },
-      "type": "OCR"
+      "type": "FeatureMatch"
     },
     "timeout": 2500
   },
@@ -124,7 +123,7 @@
     "$__mpe_code": {
       "position": {
         "x": 2100,
-        "y": 219
+        "y": 226
       }
     },
     "action": {
@@ -154,7 +153,7 @@
     "$__mpe_code": {
       "position": {
         "x": 0,
-        "y": 0
+        "y": 264
       }
     },
     "action": {
@@ -168,56 +167,11 @@
       "type": "DirectHit"
     }
   },
-  "新建节点1": {
-    "$__mpe_code": {
-      "position": {
-        "x": 0,
-        "y": 264
-      }
-    },
-    "action": {
-      "param": {},
-      "type": "Click"
-    },
-    "recognition": {
-      "param": {
-        "any_of": [
-          {
-            "param": {
-              "green_mask": true,
-              "roi": [
-                450,
-                925,
-                85,
-                130
-              ],
-              "template": [
-                "StudentEntry.png"
-              ]
-            },
-            "sub_name": "StudentEntry",
-            "type": "FeatureMatch"
-          },
-          {
-            "param": {
-              "expected": [
-                "學生",
-                "学生"
-              ],
-              "roi": "StudentEntry"
-            },
-            "type": "OCR"
-          }
-        ]
-      },
-      "type": "Or"
-    }
-  },
   "检测是否位于详情页": {
     "$__mpe_code": {
       "position": {
         "x": 2400,
-        "y": 416
+        "y": 423
       }
     },
     "action": {
@@ -234,19 +188,17 @@
     "pre_delay": 0,
     "recognition": {
       "param": {
-        "expected": [
-          "基本情报",
-          "基本情報",
-          "基本信息"
-        ],
         "roi": [
-          1000,
-          180,
-          270,
-          80
+          625,
+          945,
+          320,
+          120
+        ],
+        "template": [
+          "Rotate.png"
         ]
       },
-      "type": "OCR"
+      "type": "FeatureMatch"
     },
     "timeout": 1000
   },
@@ -254,7 +206,7 @@
     "$__mpe_code": {
       "position": {
         "x": 2700,
-        "y": 313
+        "y": 320
       }
     },
     "action": {
@@ -310,7 +262,7 @@
     "$__mpe_code": {
       "position": {
         "x": 900,
-        "y": 218
+        "y": 225
       }
     },
     "action": {
@@ -356,11 +308,56 @@
     },
     "timeout": 5000
   },
+  "进入学生列表（Or有问题）": {
+    "$__mpe_code": {
+      "position": {
+        "x": 0,
+        "y": 450
+      }
+    },
+    "action": {
+      "param": {},
+      "type": "Click"
+    },
+    "recognition": {
+      "param": {
+        "any_of": [
+          {
+            "param": {
+              "green_mask": true,
+              "roi": [
+                450,
+                925,
+                85,
+                130
+              ],
+              "template": [
+                "StudentEntry.png"
+              ]
+            },
+            "sub_name": "StudentEntry",
+            "type": "FeatureMatch"
+          },
+          {
+            "param": {
+              "expected": [
+                "學生",
+                "学生"
+              ],
+              "roi": "StudentEntry"
+            },
+            "type": "OCR"
+          }
+        ]
+      },
+      "type": "Or"
+    }
+  },
   "进入学生详情（Or有问题）": {
     "$__mpe_code": {
       "position": {
         "x": 0,
-        "y": 456
+        "y": 656
       }
     },
     "action": {
@@ -415,7 +412,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1500,
-        "y": 548
+        "y": 264
       }
     },
     "action": {
@@ -452,7 +449,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1500,
-        "y": 264
+        "y": 562
       }
     },
     "action": {
@@ -516,7 +513,7 @@
     "$__mpe_code": {
       "position": {
         "x": 1800,
-        "y": 235
+        "y": 242
       }
     },
     "action": {
@@ -535,19 +532,17 @@
     "pre_delay": 0,
     "recognition": {
       "param": {
-        "expected": [
-          "基本情报",
-          "基本情報",
-          "基本信息"
-        ],
         "roi": [
-          1000,
-          180,
-          270,
-          80
+          625,
+          945,
+          320,
+          120
+        ],
+        "template": [
+          "Rotate.png"
         ]
       },
-      "type": "OCR"
+      "type": "FeatureMatch"
     }
   }
 }
