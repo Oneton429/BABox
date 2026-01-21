@@ -53,14 +53,15 @@ class StudentInfo(CustomRecognition):
         level = None
         for _ in range(3):
             if s := utils.getText(
-                context, image, roi=[50, 880, 87, 35], match=r"([Ll][Vv]\.\d+)||(等级\d+)"
+                context, image, roi=[50, 885, 87, 48], match=r"([Ll][Vv]\.\d+)||(等级\d+)"
             ):
-                level = int(s[3:]) if s.lower().startswith("lv.") else int(s[2:])
+                fixed = "".join({"O": "0", "o": "0", "A": "4", "I": "1"}.get(ch, ch) for ch in s if ch in "0123456789OAoAI")
+                level = int(fixed)
                 break
         tier = self.getStudentStars(context, image)
         relationship = None
         for _ in range(3):
-            if s := utils.getText(context, image, roi=[69, 839, 30, 25], match=r"\d+"):
+            if s := utils.getText(context, image, roi=[69, 849, 30, 25], match=r"\d+"):
                 relationship = int(s)
                 break
 
